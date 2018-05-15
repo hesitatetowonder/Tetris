@@ -66,17 +66,22 @@ function update(time = 0) {
 
     dropCounter += deltaTime;
     if (dropCounter > dropInterval) {
-        player.pos.y++;
-        if (collide(arena, player)) {
-            player.pos.y--;
-            merge(arena, player);
-            player.pos.y = 0;
-        }
+        hitBottom();
         dropCounter = 0;
     }
 
     draw();
     requestAnimationFrame(update);
+}
+
+function hitBottom() {
+    player.pos.y++;
+    if (collide(arena, player)) {
+        player.pos.y--;
+        merge(arena, player);
+        player.pos.y = 0;
+    }
+
 }
 
 const arena = createMatrix(12, 20);
@@ -94,12 +99,7 @@ document.addEventListener('keydown', event => {
         player.pos.x++;
     }
     if ((event.key === 'z') || (event.key === 'ArrowDown')) {
-        player.pos.y++;
-        if (collide(arena, player)) {
-            player.pos.y--;
-            merge(arena, player);
-            player.pos.y = 0;
-        }
+        hitBottom();
     }
 });
 
