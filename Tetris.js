@@ -95,6 +95,11 @@ document.addEventListener('keydown', event => {
     }
     if ((event.key === 'z') || (event.key === 'ArrowDown')) {
         player.pos.y++;
+        if (collide(arena, player)) {
+            player.pos.y--;
+            merge(arena, player);
+            player.pos.y = 0;
+        }
     }
 });
 
