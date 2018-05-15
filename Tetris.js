@@ -32,6 +32,7 @@ function createMatrix(w, h) {
 function draw() {
     context.fillStyle = 'gray';
     context.fillRect(0, 0, canvas.width, canvas.height);
+    drawMatrix(arena, { x: 0, y: 0 });
     drawMatrix(player.matrix, player.pos);
 }
 
@@ -56,6 +57,50 @@ function merge(arena, player) {
     });
 }
 
+function hitBottom() {
+    player.pos.y++;
+    if (collide(arena, player)) {
+        player.pos.y--;
+        merge(arena, player);
+        player.pos.y = 0;
+    }
+
+}
+
+function playerMove(dir) {
+    player.pos.x += dir;
+    if (collide(arena, player)) {
+        player.pos.x -= dir;
+    }
+}
+
+function playerRotate(dir) {
+    const pos = player.pos.x;
+    let offset = 1;
+    rotate(player.matrix, dir);
+    while (collide(arena, player)) {
+        player.pos.x += offset;
+        offset = -(offset + (offset > 0 ? 1 : -1));
+        if (offset > player.matrix[0].length) {
+            rotate(player.matrix, -dir);
+            player.pos.x = pos;
+            return;
+        }
+    }
+
+}
+
+function rotate(matrix, dir) {
+    for (let y = 0; y < matrix.length; ++y) {
+        for (let x = 0; x < y; ++x) {
+            [matrix[x][y], matrix[y][x],]
+                = [matrix[y][x], matrix[x][y]];
+
+        }
+    }
+    matrix.forEach(row => row.reverse());
+}
+
 let dropCounter = 0;
 let dropInterval = 1000;
 let lastTime = 0;
@@ -74,16 +119,6 @@ function update(time = 0) {
     requestAnimationFrame(update);
 }
 
-function hitBottom() {
-    player.pos.y++;
-    if (collide(arena, player)) {
-        player.pos.y--;
-        merge(arena, player);
-        player.pos.y = 0;
-    }
-
-}
-
 const arena = createMatrix(12, 20);
 
 const player = {
@@ -93,13 +128,16 @@ const player = {
 
 document.addEventListener('keydown', event => {
     if ((event.key === 'a') || (event.key === 'ArrowLeft')) {
-        player.pos.x--;
+        playerMove(-1);
     }
     if ((event.key === 's') || (event.key === 'ArrowRight')) {
-        player.pos.x++;
+        playerMove(1);
     }
     if ((event.key === 'z') || (event.key === 'ArrowDown')) {
         hitBottom();
+    }
+    if ((event.key === 'ArrowUp') || (event.key === 'w')) {
+        playerRotate(1);
     }
 });
 
