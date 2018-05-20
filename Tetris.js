@@ -148,6 +148,8 @@ function playerReset() {
         arena.forEach(row => row.fill(0));
         player.score = 0;
         updateScore();
+        increase = 50;
+        dropInterval = 1000;
     }
 }
 
@@ -181,6 +183,7 @@ function rotate(matrix, dir) {
 let dropCounter = 0;
 let dropInterval = 1000;
 let lastTime = 0;
+let increase = 50;
 
 function update(time = 0) {
     const deltaTime = time - lastTime;
@@ -190,6 +193,12 @@ function update(time = 0) {
     if (dropCounter > dropInterval) {
         hitBottom();
         dropCounter = 0;
+        increase--;
+    }
+    if (increase === 0) {
+        dropInterval -= 10;
+        console.log(dropInterval);
+        increase = 50;
     }
 
     draw();
