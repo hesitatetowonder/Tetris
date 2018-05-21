@@ -145,6 +145,7 @@ function playerReset() {
     player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
     player.pos.y = 0;
     if (collide(arena, player)) {
+        confirm("Game Over \nPress OK to play again");
         arena.forEach(row => row.fill(0));
         player.score = 0;
         updateScore();
@@ -240,8 +241,11 @@ document.addEventListener('keydown', event => {
     if ((event.key === 'ArrowUp') || (event.key === 'w')) {
         playerRotate(1);
     }
-    if ((event.key === 'q')) {
+    if (event.key === 'q') {
         playerRotate(-1);
+    }
+    if (event.key === 'p') {
+        confirm('Game Paused');
     }
 });
 
