@@ -195,9 +195,8 @@ function update(time = 0) {
         dropCounter = 0;
         increase--;
     }
-    if (increase === 0) {
+    if ((increase === 0) && (dropInterval > 10)) {
         dropInterval -= 10;
-        console.log(dropInterval);
         increase = 50;
     }
 
@@ -246,7 +245,20 @@ document.addEventListener('keydown', event => {
     }
 });
 
-playerReset();
-updateScore();
-update();
+let startPrompt = 'No';
+function start() {
+    startPrompt = prompt("Ready?", "Yes");
+    console.log(startPrompt.toUpperCase);
+    if (startPrompt[0] !== 'Y') {
+        start();
+    } else {
+        playerReset();
+        updateScore();
+        update();
+    }
+}
+
+start();
+
+
 
